@@ -1,4 +1,6 @@
 #enumerate(adds an index to an element of the list):
+from string import digits
+
 list_1 = ['History', 'Math', 'Physics', 'CompSci']
 for index, science in enumerate(list_1, start=1):
     print(index, science)
@@ -114,3 +116,111 @@ def mod(myList):
 for i in mod(myList):
     print(i) #20 30 40 50
 
+#Anotations После двоеточий идут типы, которые принимает аргумент, после -> идет тип, который возвращает функция.
+def func(number: int, value: list) -> None:
+    pass
+
+#seattr присваивает атрибут классу
+class Person:
+    name = 'Ivan'
+    age = 30
+
+setattr(Person, 'lastname', 'Ivanov')# lastname = Ivanov, но аттрибут можно создать и так Peson.lastanme = 'Ivanov'
+#Удалить аттрибут del Person.lastname
+
+#private whatever. К методам/перемнным, которые начинаются с '__' можно обращаться только внутри класса.
+class Bank:
+    def __init__(self, man):
+        self.__man = man
+
+    def __man_rep(self):
+        return f'man name is {self.__man}'
+a = Bank('Herbert')
+# a.__man Error
+# a.__man_rep() Error
+
+# Пространство имен класса
+class DptIT:
+    PYTHON_DEV = 1
+    GO_DEV = 2
+    REACT_DEV = 1
+
+    def hiring_devs(self):
+        self.PYTHON_DEV = self.PYTHON_DEV + 1 # вызывая метод через экземпляр, изменится только переменная экземпляра,
+        # и в следующем экземпляре она будет дефолтной
+        DptIT.PYTHON_DEV = DptIT.PYTHON_DEV + 1 # тут поменятеся уже переменная класса, и в следующем экземпляре
+        # она будет + 1
+
+# Property(свойство)
+class User:
+    def __init__(self, login, password):
+        self.login = login
+        self.__password = password #Можно присвоить переменной имя сеттера, тогда провреки будут происходить во
+        # время создания экземпляра self.password = password
+
+    @property
+    def password(self):
+        print('getter called')
+        return self.__password
+
+    @staticmethod
+    def is_include_number(password):
+        for digit in digits:
+            if digit in password:
+                return True
+        return False
+
+    @password.setter
+    def password(self, value):
+        print('setter called')
+        if not isinstance(value, str):
+            raise TypeError()
+        if len(value) < 4:
+            raise ValueError()
+        if len(value) > 12:
+            raise ValueError()
+        if not User.is_include_number(value):
+            raise ValueError()
+        self.__password = value
+'''
+r = User('aaa', 123)
+r.password = [21] -- TypeError('Пароль должен быть строкой')
+r.password = '12' -- ValueError('>4 pls')
+r.password = '1234567890123456' -- ValueError('<13 pls')
+r.password = 'hghjklaa' -- ValueError('digit pls')
+r.password = 'sdfghj12' -- OK
+'''
+
+#__str__ и __repr__  repr - как наш объект отображается в системе, str - как отображается пользователю
+
+class Lion:
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return f'The object Lion - {self.name}'
+    def __str__(self):
+        return f'Lion - {self.name}'
+'''
+w = Lion('Vasya')
+w -- The object Lion - Vasya
+print(w) -- Lion - Vasya
+str(w) -- Lion - Vasya
+'''
+
+#__len__ и __abs__
+
+class Person:
+    def __init__(self, name, surname):
+        self.name = name
+        self.surname = surname
+
+    def __len__(self):
+        return len(self.name + self.surname) # Не должно быть отрицательным, поможет abs
+                                            # return abs(self) -- сработает как self.__abs__()
+    def __abs__(self):
+        return abs(self.name - self.surname)
+'''
+a = Person('aa', 'bbb')
+len(a) -- 5 Если бы дандр лен не было - object of type Person has no len()
+'''
