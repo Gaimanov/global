@@ -19,6 +19,35 @@ print(', '.join(list_1))
 a_str = 'a, b, c, d'
 print(a_str.split(','))
 
+#Зачем нужен self
+#Это ссылка на экземпляр класса
+class Point1:
+    color = 'red'
+    circle = 2      #|-Point1.get_coords: "who the fuck am giving this method to? Oh, self tells me that it's rock who i give it. Ok then.."
+    def get_coords(self, x, y):
+        #|-how in the world does rock have an access to y and x, oh right, they have a link - pt.y
+        self.y = y
+        self.x = x
+    def show_coords(self):
+        print(self.x, self.y)
+
+'''
+rock = Point1()
+rock.get_coords(1, 3)
+rock.y -- 3
+Метод get_coords как был в классе Point1, так и остался, он никуда не передается. Только с помощью ссылки на экземпляр, которой служит self,
+мы знаем где этот метод юзается и каким экземпляром. Т.е. метод стоит на месте и служит как экземпляру rock, 
+так и может служить экземпляру wood, если он будет создан и метод get_coords будет вызван
+
+Так как методы это тоже аттрибуты класса, то мы можем юзать getattr:
+             |-Пространство имен, из которого мы будем брать метод
+             |
+             |        |-имя метода
+f = getattr(rock, 'show_coords')
+print(f) -- <bound method Point1.get_coords....>
+print(f()) -- (1, 3)
+'''
+
 #.set() removes duplicates, changes the order randomly
 print({'Ilya', 'Gaimanov', 'Ilya', 'Sam', 'Saam'})
 cs_courses = {'History', 'Math', 'Physics', 'CompSci'}
@@ -57,7 +86,8 @@ b = 723
 
 #super().__init__ Function used to give access to the methods of a parent class.
 #                  Returns a temporary object of a parent class when used
-
+#делегирование!!Можно проворачивать с люыми методами, а не только с init
+#btw init -- Метод инициализации
 class Rectangle:
     def __init__(self, length, width):
         self.length = length
@@ -138,6 +168,13 @@ class Bank:
 a = Bank('Herbert')
 # a.__man Error
 # a.__man_rep() Error
+'''
+Но инкапсуляции полноценной нет, так как доступ можно получить:
+a._Bank__man -- Herbert
+a._Bank__man = 'Roger'
+a._Bank__man -- Roger
+'''
+
 
 # Пространство имен класса
 class DptIT:
@@ -223,4 +260,204 @@ class Person:
 '''
 a = Person('aa', 'bbb')
 len(a) -- 5 Если бы дандр лен не было - object of type Person has no len()
+'''
+
+#__getitem__, __setitem__, __delitem__
+
+class Vector:
+    def __init__(self, *args):
+        self.values = list(args)
+
+    def __repr__(self):
+        return str(self.values)
+
+    def __getitem__(self, item):
+        if 0 <= item <= len(self.values):
+            return self.values[item]
+        else:
+            raise IndexError('out of range')
+
+    def __setitem__(self, key, value):
+        if 0 <= key < len(self.values):
+            self.values[key] = value
+        else:
+            raise IndexError('list assignment out of range')
+
+    def __delitem__(self, key):
+        if 0 <= key < len(self.values):
+            del self.values[key]
+        else:
+            raise IndexError('list assignment out of range')
+'''
+v = Vector(13, 1424, 5, 642, 1)
+v[1] -- 1424     Было бы TypeError: 'Vector' object does not support indexing(Классы изначально не поддерживают 
+индексацию)
+v[0] = 22 -- TypeError: 'Vector' object does not support item assignment, поэтому __setitem__
+v[0] = 22
+v -- [22, 1424....]
+del v[0]
+v -- [1424, 5...]
+'''
+
+#__iter__
+
+class Student:
+    def __init__(self, name, surname, marks):
+        self.name = name
+        self.surname = surname
+        self.marks = marks
+
+    def __iter__(self):
+        return iter(self.surname)
+
+igor = Student('igor', 'nikolaev', [3, 4, 5, 6])
+for i in igor:
+    print(i) # n i k o l a e v
+
+#__bool__
+class Point:
+    def __init__(self, x,y):
+        self.x = x
+        self.y = y
+
+    def __bool__(self):
+        return self.x != 0 or self.y != 0
+
+'''
+a = Point(3, 4)
+bool(a) -- True
+или можно вызвать неявно
+if a:
+    print('Right') -- Right
+b = Point(0, 0)
+if b:
+    print('Right') -- ''
+'''
+
+#__call__
+from time import perf_counter
+
+class Timer:
+    def __init__(self, func):
+        self.fn = func
+
+    def __call__(self, *args, **kwargs):
+        start = perf_counter()
+        print(f'Вызывается функция {self.fn.__name__}')
+        result = self.fn(*args, **kwargs)
+        finish = perf_counter()
+        print(f'Функция отработала за {finish - start}')
+        return result
+
+@Timer
+def fact(n):
+    pr = 1
+    for i in range(1, n+1):
+        pr *=1
+    return pr
+
+'''
+fact = Timer(fact)
+fact(7) -- Вызывается фунция fact
+           Функция отработала за 0.0001...
+'''
+
+#everything is object
+class Peson:
+    pass
+'''
+issubclass(Person, object) -- True
+'''
+
+#Переопределить родительский метод - написать такой же метод, как и у класса-родителя
+#Расширить класс - написать метод, которого нет у класса родителя
+class Person:
+    def breath(self):
+        print('breath')
+    def walk(self):
+        print('walk')
+    def combo(self):
+        self.walk()
+        self.breath()
+        if hasattr(self, 'lean'): #Проверка на наличие аттрибута при вызове метода
+            print(self.lean)
+        if hasattr(self, 'age'):
+            print(self.age)
+class Doctor(Person):
+    age = 30
+    def breath(self):
+        print('breath!')
+    def walk(self):
+        print('walk!')
+    def lean(self):
+        print('lean!')
+'''
+p = Person()
+p.combo -- breath walk
+x = Doctor()
+x.combo -- breath! walk! lean! 30 
+'''
+
+#множественное наследование
+class Doctorito:
+    def __init__(self, degree):
+        self.degree = degree
+
+    def graduate(self):
+        print('Ura, ya doctor')
+
+class Builder:
+    def __init__(self, rank):
+        self.rank = rank
+
+    def graduate(self):
+        print('Ura, ya builder')
+
+class Persona(Builder, Doctorito):
+    def __init__(self, rank, degree):
+        super.__init__(rank)
+        Doctorito.__init__(self, degree)
+
+    def __str__(self):
+        return f'Person {self.rank}, {self.degree}'
+
+a = Persona(5, 'spec')
+a.graduate() # -- Ura, ya builder из-за MRO(method resolution order)
+print(a) # -- Person 5 spec
+
+#slots
+class Slots:
+    __slots__ = ('x', 'y')
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+a = Slots(1, 2)
+a.z = 3  # ошибка, так как нельзя присваивать новые аттрибуты классу, где сть slots
+
+#обработка исключений
+#Все эксепшены - классы и наследуются от класса baseexception. От него исходят классы exception, systemexit, generator exit и keyboardinterrupt
+#От exception исходит AttributeError, ArithmeticError, EOFError, NameError, LookupError(Index&Key errors), OSError, TypeError, ValueError
+try:
+    1/0
+except (ZeroDivisionError, TypeError): # Через запятую несколько исключений указывается
+    print('ZeroDivisionError here m8')
+else:
+    print('good') # выполняется только в при отсутствии ошибок
+finally:
+    print('end') # выполняется всегда. Нужно юзать когда создаешь файлы, чтобы потом их удалить
+
+#моносостояние python
+class User:
+    args = {
+        'version': 1,
+        'flags': 2
+    }
+    def __init__(self):
+        self.__dict__ = self.args
+'''
+a = User()
+b = User()
+a.args['version'] = 2
+a.args['version'] -- 2
+b.args['version'] -- 2
 '''
