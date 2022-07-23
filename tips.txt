@@ -1,0 +1,39 @@
+cd - --возвращает в предыдущую директорию, в которой находился
+cd ~ --возвращает в домашюю директорию
+Ctrl + L --очистка экрана(тоже самое, что clear), но он не удаляет историю, поэтому можно листать вверх
+reset -- clear на стероидах. Очищает полностью
+Ctrl + Z --сворачивание файла, открытого в терминале(с помощью vim, на пример) fg --вернет в файл
+htop --утилита для мониторинга ресурсов
+sudo !! --выполняет последнюю введенную команду(к примеру apt update)с припиской sudo
+Ctrl + R --вызывает поиск уже когда введенных команд(нужно начать писать часть команды, которую помнишь.
+           Менять команды можно еще раз нажимая Ctrl + R)
+history --вызывает историю введенных команд с номерными индексами напротив(Выполнить команду можно так: !номер_команды)
+F11 --fullscreen terminal
+Ctrl + Shift + '+' --increase font
+Ctrl + Shift + '-' --decrease font
+Ctrl + U --удаляет вводимую команду(удобно, если команда длинная)
+tail -f path/to/file --логирует что происходит с файлом в реальном времени
+
+----------------------------------
+----------------------------------
+Pycharm
+Ctrl + Shift + A(Ctrl + Alt + O) --> optimize imports
+Shift + Enter --starts a new line and puts a cursor on it
+Ctrl + Alt + Enter --up a string create a new!
+Alt + Shift + UP --переместить выделенную строку на одну выше
+Ctrl + Alt + Enter --reformat file
+Ctrl + W.. --select thing to copy
+Ctrl + Q --show documentation on a func
+Alt + 1 --hide project bar
+
+
+
+Ctrl + Shift + A --find actions(go to, find..)
+Ctrl + Alt + f7 --show usages
+Ctrl + E --shows recent files --> Shift + Enter - opens a file in a right split
+
+
+
+Alt + Enter --> Inject language or reference --allows to inject a diff language for selected string
+Ctrl + Shift + N --> x/up --finds a dir containing 's' and file containing 'up' in it
+Ctrl + Alt + Right -- navs back to the previous cursor placement

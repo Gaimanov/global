@@ -452,7 +452,7 @@ class User:
         'version': 1,
         'flags': 2
     }
-    def __init__(self):
+    def __init__(self): # Если вводить переменные и нажать alt + enter, можно создать переменную в 3 клика
         self.__dict__ = self.args
 '''
 a = User()
@@ -461,3 +461,26 @@ a.args['version'] = 2
 a.args['version'] -- 2
 b.args['version'] -- 2
 '''
+
+#decorators
+def i_am_top(func):
+    def wrapper(*args, **kwargs):
+        print('I am top!')
+        func(*args, **kwargs)
+        return wrapper()
+def pylounge_decorator(hi_msg, bye_msg):
+    def inner_decorator(func):
+        def wrapper(*args, **kwargs):
+            print(hi_msg)
+            func(*args, **kwargs)
+            print(bye_msg)
+        return wrapper
+    return inner_decorator
+
+
+@i_am_top
+@pylounge_decorator('Hello!', 'Bye Everybody!')
+def get_something(get1, get2, get3):
+    print(f'GET1: {get1},'
+          f'GET2: {get2},'
+          f'GET3: {get3}')
