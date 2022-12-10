@@ -1,7 +1,103 @@
+"""
+Характеристика Python - интерпретируемый, мультипарадигруемый язык програмирования со строгой динамической типизацией.
+Строгая динамическа типизация - одна переменная в разные моменты времени может иметь разные типы данных(строгая - нет автоматической конверсии типов при каких-то операциях).
+Преимущества и недостатки - не очень быстрый(сначала компилирует код в байт-код и потом его интерпритирует), множество библиотек, широкое комюнити
+Типы данных - Изменяемые и неизменяемые(При работе с неизменяемыми создается новый объект в памяти). Изменяемые - list,
+set, dict. Подтипы: упорядоченные (списки, кортежи, строки и словари),неупорядоченные (множества).
+Ключем в словаре может быть любой неизменяемый объект, либо объект у которого реализован магический метод __hash__
+Функция - переиспользуемый участок кода, в котором можно параметризировать какие-то значения.
+Замыкание -
+Распаковка параметров - * и **. * - собираем в кортеж, ** - в dict
+Списковое включение(list comp) - Списковое включение создает новый list, применяя выражение к каждому элементу итерируемого.
+Наиболее простой формой является: [ <expression> for <element> in <iterable> ]
+ООП - методология программирования, основанная на представлении программы в виде совокупности взаимодействующих объектов,
+каждый из которых является экземпляром определённого класса, а классы образуют иерархию наследования
+    Принципы ООП
+    Инкапсуляция
+    Все объекты в Python инкапсулируют внутри себя данные и методы работы с ними, предоставляя публичные интерфейсы для
+    взаимодействия.
+    Атрибут может быть protected()
+    Наследование
+    Язык программирования Python реализует как стандартное одиночное наследование, так и множественное:
+        class Mammal():
+        className = 'Mammal'
+
+        class Dog(Mammal):
+        species = 'Canis lupus'
+
+        class Horse():
+        isHorse = True
+
+        class Donkey():
+        isDonkey = True
+        class Mule(Horse, Donkey):
+        mule = Mule()
+        mule.isHorse # True
+        mule.isDonkey # True
+    Полиморфизм
+    Концепция полиморфизма – важная часть ООП на Python. Все методы в языке изначально виртуальные. Это значит, что
+    дочерние классы могут их переопределять и решать одну и ту же задачу разными путями, а конкретная реализация будет
+    выбрана только во время исполнения программы. Такие классы называют полиморфными.
+        class Mammal:
+            def move(self):
+            print('Двигается')
+
+        class Hare(Mammal):
+            def move(self):
+                print('Прыгает')
+
+        animal = Mammal()
+        animal.move() # Двигается
+        hare = Hare()
+        hare.move() # Прыгает
+MRO(Method resolution order) - порядок поиска атрибутов при наследовании(child->parent1->parent2)
+Виды наследования - моно, множественное(наследование от одного класса и нескольких). Также есть многоуровневое, когда
+идет некая матрешка классов
+staticmethod vs classmethod - classmethod принимает первым парметорм cls, соответственно он имеет доступ к аттрибутам класса,
+чего не имеет staticmethod, оба метода могут вызываться без инициализации объекта
+Контекстный менеджер - любой объект, который использует два магических метода - enter(точка входа, к примеру в файл) и
+exit(гарантированное закрытие файла), альтернатива - try, except, finally, else(The code enters the else block only if
+the try clause does not raise an exception.)
+Итератор - любой метод, который реализует магический метод __next__. Итерируемый объект(его цель - создать итератор) реализует метод iter
+Генератор - итератор с синтаксическими изменениями(использование опертора yield). Итерируется только один раз(до того,
+как не получит exception StopIteration). Без костылей на вторую итерацию не зайти
+continue в for просто скпиает итерацию, если условие выполнено
+модуль - файл с расширением .py, пакет - это каталог (директория) с файлами модулей, имеющая имя в формате «snake_case»
+и содержащая «__init__.py». В папке init'a нет. Инит можно оставить пустым/прописывать зависимости и импорты(импорты будут чище). Он выполняется при каждом импорте пакета
+SOLID:
+S - simple responsibility(принцип единичной ответственности - каждый класс должен выполнять только те задачи, для которых он был задуман)
+O - open/close(принцип открытости/закрытости - Следование принципу OCP заключается в том, что программное обеспечение
+изменяется не через изменение существующего кода, а через добавление нового кода. То есть созданный изначально код остаётся
+«нетронутым» и стабильным, а новая функциональность внедряется либо через наследование реализации, либо через использование абстрактных интерфейсов и полиморфизм.)
+L - The Liskov Substitution Principle(Наследник класса дополняет, но не заменяет поведение базового класса. То есть в любом месте
+программы замена базового класса на класс-наследник не должна вызывать проблем. Если по каким-то причинам так не получается,
+то вероятнее всего имеет место либо некорректная реализация, либо неверно выбранная абстракция для наследования.
+Соблюдение принципа подстановки Барбары Лисков позволяет гарантировать, что любой созданный нами подкласс будет без проблем 
+использоваться ранее реализованными модулями, которые работали с надклассом. )
+I - interface segregation principle(Принцип разделения интерфейсов говорит о том, что слишком «толстые» интерфейсы
+необходимо разделять на более маленькие и специфические)
+D - dependency inversion principle(Модуль высокого уровня не должен зависеть от модулей низкого уровня. И то, и другое
+должно зависеть от абстракций. )
+"""
+
+
+
+
+
+
+
+
+
+
+
+
+
 #enumerate(adds an index to an element of the list):
+import json
+import string
 from string import digits
 
-list_1 = ['History', 'Math', 'Physics', 'CompSci']
+list_1 = ['History', 'Math', 'Physics', 'CompSci'] #  Лист - итерируемый объект
 for index, science in enumerate(list_1, start=1):
     print(index, science)
 
@@ -17,7 +113,7 @@ list(enumerate(colour.values())) # [(0, 0), (1, 2), (2, 4), (3, 9), (4, 1)]
 print(', '.join(list_1))
 #back to list:
 a_str = 'a, b, c, d'
-print(a_str.split(','))
+print(a_str.split(', '))
 
 #Зачем нужен self
 #Это ссылка на экземпляр класса
@@ -141,12 +237,28 @@ print(*my_list) # 1 2 3 5 7
 myList=[10,20,25,30,35,40,50]
 def mod(myList):
     for i in myList:
-        if(i%10==0):
+        if i % 10 == 0:
             yield i
 for i in mod(myList):
-    print(i) #20 30 40 50
+    print(i) #10 20 30 40 50
 
-#Anotations После двоеточий идут типы, которые принимает аргумент, после -> идет тип, который возвращает функция.
+#Anotations После двоеточий идут типы, которые принимает аргумент, после -> идет тип, который возвращает функция. Есть варианты, как форсить вбивать именно нужный тип аргумента - Union, Any, Optional
+from typing import Optional, Union
+
+amount: int
+amount = None  # Incompatible types in assignment (expression has type "None", variable has type "int")
+
+price: Optional[int]
+price = None
+
+def hundreds(x: Union[int, float]) -> int:
+    return (int(x) // 100) % 10
+
+hundreds(100.0)
+hundreds(100)
+hundreds("100")  # Argument 1 to "hundreds" has incompatible type "str"; expected "Union[int, float]"
+
+#Типизация: то какой тип аргументов принимает функция и то, какой ти возвращает
 def func(number: int, value: list) -> None:
     pass
 
@@ -155,7 +267,7 @@ class Person:
     name = 'Ivan'
     age = 30
 
-setattr(Person, 'lastname', 'Ivanov')# lastname = Ivanov, но аттрибут можно создать и так Peson.lastanme = 'Ivanov'
+setattr(Person, 'lastname', 'Ivanov')# lastname = Ivanov, но аттрибут можно создать и так Person.lastanme = 'Ivanov'
 #Удалить аттрибут del Person.lastname
 
 #private whatever. К методам/перемнным, которые начинаются с '__' можно обращаться только внутри класса.
@@ -462,12 +574,12 @@ a.args['version'] -- 2
 b.args['version'] -- 2
 '''
 
-#decorators
+#decorators - структурный паттерн. Позволяет расширить функциоанл функции при этом не меняя ее внутри.
 def i_am_top(func):
     def wrapper(*args, **kwargs):
         print('I am top!')
         func(*args, **kwargs)
-        return wrapper()
+    return wrapper
 def pylounge_decorator(hi_msg, bye_msg):
     def inner_decorator(func):
         def wrapper(*args, **kwargs):
@@ -484,3 +596,111 @@ def get_something(get1, get2, get3):
     print(f'GET1: {get1},'
           f'GET2: {get2},'
           f'GET3: {get3}')
+
+#Инкремент
+a += 1
+
+#замыкания
+def func_as_object(a, b):
+    def add():
+        return a + b
+    def sub():
+        return a - b
+    def mul():
+        return a * b
+    func_as_object.add = add()
+    func_as_object.sub = sub()
+    func_as_object.mul = mul()
+    return func_as_object
+
+a = func_as_object(1, 3)
+'''
+a.sub -- -2
+a.mul -- 3
+'''
+def func1():
+    a = 1
+    b = 'line'
+    c = [1, 2, 3]
+    def func2():
+        nonlocal a
+        c.append(4)
+        a +=1
+        return a, b, c
+    return func2
+
+'''
+a = func1()
+a() -- (2, 'line', [1, 2, 3, 4])
+a() -- (3, 'line', [1, 2, 3, 4, 4])
+'''
+
+# Dictionary comprehensions
+import random
+
+dna_bases = ["A", "T", "C", "G"]
+
+dna_st1 = random.choices(dna_bases, k=10)
+
+dna = {key: [b, 'T' if b =='A'
+                else 'A' if b =='T'
+                else 'C' if b=='G'
+                else 'G']
+            for (key, b) in enumerate(dna_st1)}
+
+print(dna)
+'''
+{0: ['A', 'T'], 1: ['A', 'T'], 2: ['C', 'G'], 3: ['C', 'G'], 4: ['T', 'A'], 5: ['C', 'G'], 6: ['A', 'T'], 
+7: ['A', 'T'], 8: ['A', 'T'], 9: ['G', 'C']}
+'''
+
+keys = ["id", "username", "password"]
+users = ["mariyasha888", "KnotABot", "SpongiBOBO", "IAMBATMAN"]
+data = [{key:(i if key == "id" else users[i] if key == "username" else "".join(random.choices(string.printable, k=2)))
+         for key in keys} for i in range(len(users))]
+print(data)
+'''
+[{'id': 0, 'username': 'mariyasha888', 'password': 'jF'}, {'id': 1, 'username': 'KnotABot', 'password': '?5'}, 
+{'id': 2, 'username': 'SpongiBOBO', 'password': '60'}, {'id': 3, 'username': 'IAMBATMAN', 'password': '7V'}]
+'''
+
+# for цикл со списком
+jj = [1, 2, 3]
+for i in range(len(jj)):
+    print(i)  # -- wrong!
+for i in jj:
+    print(i)  # -- right!
+
+print(1_000_000_256)  # 1000000256 More readable
+'''
+Разница между is и ==
+== сравнивает значение операндов(операнд-значение, на которое действует оператор. оператор - имя конкретной операции, выполняемой с операндом(например - +))
+is сравнивает то, указывают ли операнды на один и тот же объект в памяти.
+Разница между sort и sorted - sort возвращает исходный список, sorted - его копию
+del vs pop -- del deletes, pop returns deleted, has default value, if arg not found
+функции и методы в Python'e — это практически одно и то же, за исключением того, что методы всегда ожидают первым параметром ссылку на сам объект (self). 
+'''
+
+#Линеризация
+class A1:
+    pass
+class A(A1):
+    pass
+class B(A1):
+    pass
+
+class C(A, B):
+    pass
+
+'''
+Результат наслдеования будет class C(A, B, A1) -- питон автоматом подставит А1, так как это общий родитель
+'''
+
+'''
+Append vs Extend
+list1 = [1, 2, 3, 4]
+list2 = [5, 6, 7, 8]
+list1.append(list2) -- [1, 2, 3, 4, [5, 6, 7, 8]]
+list1.extend(list2) -- [1, 2, 3, 4, 5, 6, 7, 8]
+'''
+
